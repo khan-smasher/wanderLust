@@ -11,7 +11,9 @@ app.use(express.urlencoded({ extended: true}));
 
 // set base route to /api/v1/users
 // app.use("/api/v1/users", userRouter);
-
+app.get("/", (req,res)=> {
+    res.send("HI!")
+})
 
 
 // ✅ Global error handler — must come after routes
