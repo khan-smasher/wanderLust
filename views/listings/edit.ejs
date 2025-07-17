@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WanderLust | Edit</title>
+</head>
+<body>
+  <form action="/api/v1/listings/<%= listing._id %>?_method=PATCH" method="POST">
+    <input name="title" type="text" value="<%= listing.title %>" placeholder="Title" /><br/>
+    <textarea name="description" placeholder="Description"> <%= listing.description %> </textarea><br/>
+    <input name="image" type="text" value="<%= listing.image %>" placeholder="Image URL" /><br/>
+    <input name="price" type="number" value="<%= listing.price %>" placeholder="Price" /><br/>
+    <input name="location" type="text" value="<%= listing.location %>" placeholder="Location" /><br/>
+    <input name="country" type="text" value="<%= listing.country %>" placeholder="Country" /><br/>
+    <button type="submit">Update</button>
+  </form>
+</body>
+</html>
