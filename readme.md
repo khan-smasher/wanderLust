@@ -27,8 +27,8 @@ Wanderlust API is a backend service built with Node.js, Express, and MongoDB for
    Create a `.env` file in the root directory (or rename `.env.sample`):
 
    ```env
-   PORT=8080
-   MONGODB_URI=mongodb+srv://username:password@cluster0.mongodb.net/wanderlust?retryWrites=true&w=majority
+   PORT=
+   MONGODB_URI=
    ```
 
    Replace `MONGODB_URI` with your actual MongoDB connection string.
@@ -72,10 +72,10 @@ Create a `.env` file in the root of your project based on this sample:
 # .env.sample
 
 # Port on which the Express server will run
-PORT=8080
+PORT=
 
 # MongoDB connection URI (replace with your own connection string)
-MONGODB_URI=mongodb+srv://username:password@cluster0.mongodb.net/wanderlust?retryWrites=true&w=majority
+MONGODB_URI=
 ```
 
 Rename `.env.sample` to `.env` and update the values before running the app.
