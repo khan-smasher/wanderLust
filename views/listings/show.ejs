@@ -28,7 +28,9 @@
     <br/>
     <br/>
 
-    <a href="/api/v1/listings/<%= listing._id %>/edit">Edit this listing</a>
-    <a href="/api/v1/listings/<%= listing._id %>/delete">Delete this listing</a>
+    <a href="/api/v1/listings/<%= listing._id %>/edit">Edit this listing</a> <br>
+    <form action="/api/v1/listings/<%= listing._id %>?_method=DELETE" method="POST">
+  <button>Delete this listing</button>
+</form>
 </body>
 </html>
