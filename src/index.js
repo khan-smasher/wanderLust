@@ -16,6 +16,7 @@ connectDB()
       console.log(`⚙️  Server listening on port ${port}`);
     });
   })
+
   .catch((err) => {
     console.error("Failed to connect to MongoDB", err);
     process.exit(1);

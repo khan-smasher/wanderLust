@@ -1,32 +1,24 @@
 import express from "express";
-import bodyParser from "body-parser";
 
+// routes import
+import listingRouter from "./routes/listing.routes.js";
 
 const app = express();
+
 app.use(express.json());
-// app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
+// set base route
+app.use("/api/v1/listings", listingRouter);
 
-
-// set base route to /api/v1/users
-// app.use("/api/v1/users", userRouter);
-app.get("/", (req,res)=> {
-    res.send("HI!")
-})
-
-
-// ✅ Global error handler — must come after routes
+// Global error handler
 app.use((err, req, res, next) => {
-    const statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || 500;
 
-    // 👇 Print error in console
-    // console.error(`[${new Date().toISOString()}] ${err.stack}`);
-
-    res.status(statusCode).json({
-        success: false,
-        message: err.message || "Internal Server Error",
-    });
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
 });
 
 export { app };
