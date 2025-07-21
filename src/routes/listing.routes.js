@@ -11,7 +11,7 @@ const router = Router();
 
 router.route("/").get(showAllListings);
 router.route("/new").get(renderFormForNewListing);
-router.route("/").post(createNewListing); // form posts to "/"
+router.route("/").post(createNewListing); 
 
 router.route("/:id/edit").get(renderEditForm);
 router.route("/:id").get(showIndividualListing);
