@@ -3,6 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import methodOverride from "method-override";
 import ejsMate from "ejs-mate";
+import {ApiError} from "./utils/ApiError.js";
+import { errorHandler } from "./middlewares/error.middleware.js"; 
 
 // Routes
 import listingRouter from "./routes/listing.routes.js";
@@ -31,14 +33,12 @@ app.use(express.static(path.join(__dirname, "../public"))); // ✅ Correct path
 app.get("/api/v1/", (req, res) => res.send("Home"));
 app.use("/api/v1/listings", listingRouter);
 
+// ⚠️ Catch-all unknown route
+app.all("/{*splat}", (req, res, next) => {
+  next(new ApiError(404, `Page not found - ${req.originalUrl}`));
+});
 
 // Global error handler
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  res.status(statusCode).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
-});
+app.use(errorHandler);
 
 export { app };

@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import Listing from "../models/listing.model.js";
+import { ApiError } from "../utils/ApiError.js";
 
 const showAllListings = asyncHandler(async (req, res) => {
   const allListings = await Listing.find({});
@@ -17,17 +18,14 @@ const renderFormForNewListing = asyncHandler(async (req, res) => {
   res.render("listings/new");
 });
 
-const createNewListing = asyncHandler(async (req, res) => {
-  const { title, description, image, price, location, country } = req.body;
+const createNewListing = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
+  if (!req.body.listing){
+    throw new ApiError(400, "Send valid data for listing");
+  }
 
-  const newListing = await Listing.create({
-    title,
-    description,
-    image,
-    price,
-    location,
-    country,
-  });
+  const newListing = new Listing(req.body.listing);
+  await newListing.save();
 
   res.redirect(`/api/v1/listings/${newListing._id}`);
 });
@@ -38,10 +36,22 @@ const renderEditForm = asyncHandler(async (req, res) => {
   res.render("listings/edit", { listing });
 });
 
-const updateListing = asyncHandler(async (req, res) => {
+const updateListing = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
+  const updatedData = { ...req.body };
 
-  const updatedListing = await Listing.findByIdAndUpdate(id, req.body, {
+  if (updatedData.price) {
+    updatedData.price = Number(updatedData.price);
+    if (isNaN(updatedData.price)) {
+      return next(
+        new ApiError(400, "Invalid data type", {
+          price: `Invalid value for price: ${req.body.price}`,
+        })
+      );
+    }
+  }
+
+  const updatedListing = await Listing.findByIdAndUpdate(id, updatedData, {
     new: true,
     runValidators: true,
   });

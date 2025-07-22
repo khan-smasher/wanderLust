@@ -122,3 +122,24 @@ body {
     transition: 100ms ease-in-out !important;
     transform:scale(1.1);
 }
+
+/* Show Page */
+.show-img {
+    height: 30vh;
+}
+
+.btns {
+    display: flex;
+
+}
+
+.edit-btn {
+    
+    background: #fe424d !important;
+    border: none !important;
+}
+
+.show-card {
+    padding-left: 0;
+    padding-right: 0;
+}

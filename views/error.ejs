@@ -1,0 +1,17 @@
+<% layout("./layouts/boilerplate.ejs") %>
+
+<div class="row">
+  <div class="alert alert-danger col-6 offset-3" role="alert">
+    <h4 class="alert-heading">Error <%= statusCode %></h4>
+    <p><%= message %></p>
+    <% if (typeof details !== 'undefined') { %>
+      <ul>
+        <% details.forEach(d => { %>
+          <li><%= d %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+    <hr>
+    <a href="/api/v1/listings" class="btn btn-secondary">Go Home</a>
+  </div>
+</div>
