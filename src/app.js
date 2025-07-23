@@ -3,35 +3,39 @@ import path from "path";
 import { fileURLToPath } from "url";
 import methodOverride from "method-override";
 import ejsMate from "ejs-mate";
-import {ApiError} from "./utils/ApiError.js";
-import { errorHandler } from "./middlewares/error.middleware.js"; 
+import { ApiError } from "./utils/ApiError.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
-// Routes
+// Importing Routes
 import listingRouter from "./routes/listing.routes.js";
+import reviewRouter from "./routes/review.routes.js";
 
-// Setup __dirname in ES module
+// Setting up __dirname in ES Module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Create Express app
+// Create express app
 const app = express();
 
-// Setup method-override and body parsing
-app.use(methodOverride("_method"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware setup
+app.use(methodOverride("_method")); // Allows using PUT/DELETE via ?_method
+app.use(express.json());            // Parse incoming JSON
+app.use(express.urlencoded({ extended: true })); // Parse form data
 
-// Set up EJS as view engine
-app.engine("ejs", ejsMate);
+// View engine setup
+app.engine("ejs", ejsMate); // Use ejs-mate for layouts/partials
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "../views"));
+app.set("views", path.join(__dirname, "../views")); // Set views directory
 
-// Serve static files from public folder
-app.use(express.static(path.join(__dirname, "../public"))); // ✅ Correct path
+// Serve static files from /public folder
+app.use(express.static(path.join(__dirname, "../public")));
 
-// Use router
+// Home route (just a placeholder)
 app.get("/api/v1/", (req, res) => res.send("Home"));
+
+// Use imported routers
 app.use("/api/v1/listings", listingRouter);
+app.use("/api/v1/listings/:id/reviews", reviewRouter); // Nested review route
 
 // ⚠️ Catch-all unknown route
 app.all("/{*splat}", (req, res, next) => {

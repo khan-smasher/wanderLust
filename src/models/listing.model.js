@@ -34,6 +34,12 @@ const listingSchema = new Schema(
       default: "India",
       set: (val) => (val === "" ? undefined : val),
     },
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Review"
+      }
+    ]
   },
   { timestamps: true }
 );
