@@ -80,10 +80,6 @@ const updateListing = asyncHandler(async (req, res, next) => {
 // DELETE /api/v1/listings/:id
 // Deletes a listing from the database
 const deleteListing = asyncHandler(async (req, res) => {
-  if (!req.body.listing) {
-    throw new ApiError(404, "Listing not found");
-  }
-
   const { id } = req.params;
 
   // Optional: log the listing being deleted
