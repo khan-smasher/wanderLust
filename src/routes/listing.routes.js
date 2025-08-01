@@ -17,6 +17,9 @@ import {
   validateListingModel,
 } from "../middlewares/validateModel.middleware.js";
 
+import { isLoggedIn, isOwner, saveRedirectUrl } from "../middlewares/validateUserInfo.middleware.js";
+
+
 // Creating a new Express router
 const router = Router();
 
@@ -32,7 +35,7 @@ router.route("/").get(showAllListings);
  * Description: Render form to create a new listing
  * Controller: renderFormForNewListing
  */
-router.route("/new").get(renderFormForNewListing);
+router.route("/new").get(isLoggedIn,renderFormForNewListing);
 
 /**
  * Route: POST /
@@ -40,14 +43,14 @@ router.route("/new").get(renderFormForNewListing);
  * Middleware: validateListingModel - validates listing data
  * Controller: createNewListing
  */
-router.route("/").post(validateListingModel, createNewListing);
+router.route("/").post(isLoggedIn,validateListingModel, createNewListing);
 
 /**
  * Route: GET /:id/edit
  * Description: Render form to edit an existing listing
  * Controller: renderEditForm
  */
-router.route("/:id/edit").get(renderEditForm);
+router.route("/:id/edit").get(isLoggedIn,isOwner,renderEditForm);
 
 /**
  * Route: GET /:id
@@ -62,14 +65,14 @@ router.route("/:id").get(showIndividualListing);
  * Middleware: validateListingModel - validates updated data
  * Controller: updateListing
  */
-router.route("/:id").patch(validateListingModel, updateListing);
+router.route("/:id").patch(isLoggedIn,isOwner,validateListingModel, updateListing);
 
 /**
  * Route: DELETE /:id
  * Description: Delete a specific listing
  * Controller: deleteListing
  */
-router.route("/:id").delete(deleteListing);
+router.route("/:id").delete(isLoggedIn,isOwner,deleteListing);
 
 // Export the configured router for use in the main app
 export default router;

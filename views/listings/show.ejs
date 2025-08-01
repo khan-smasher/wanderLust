@@ -10,26 +10,31 @@
       alt="listing_image"
     />
     <div class="card-body">
-      <p class="card-text">
-        <%= listing.description %> <br />
-        &#8377; <%= listing.price.toLocaleString("en-IN") %> <br />
-        <%= listing.location %> <br />
-        <%= listing.country %> <br />
+      <p class="card-text mt-3">
+        Owned By: <i><%= listing.owner.username %></i>
       </p>
+      <p class="card-text"><%= listing.description %></p>
+      <p class="card-text">
+        &#8377; <%= listing.price.toLocaleString("en-IN") %>
+      </p>
+      <p class="card-text"><%= listing.location %></p>
+      <p class="card-text"><%= listing.country %></p>
     </div>
   </div>
 
+  
   <br />
-  <br />
+  <% if (currUser && currUser._id.equals(listing.owner._id)) { %>
   <div class="btns offset-1">
     <a
-      href="/api/v1/listings/<%= listing._id %>/edit"
+      href="/listings/<%= listing._id %>/edit"
       class="btn btn-dark col-1 offset-2 edit-btn"
-      >Edit</a
     >
+      Edit
+    </a>
 
     <form
-      action="/api/v1/listings/<%= listing._id %>?_method=DELETE"
+      action="/listings/<%= listing._id %>?_method=DELETE"
       method="POST"
       novalidate
       class="needs-validation"
@@ -37,11 +42,13 @@
       <button class="btn btn-dark offset-4">Delete</button>
     </form>
   </div>
+  <% } %>
 
+  <% if(currUser) { %>
   <div class="col-8 offset-3 mb-3 mt-3">
     <hr />
     <h4>Leave a Review</h4>
-    <form action="/api/v1/listings/<%= listing._id %>/reviews" method="POST">
+    <form action="/listings/<%= listing._id %>/reviews" method="POST">
       <div class="mb-3 mt-3">
         <label for="rating" class="form-label">Rating</label>
         <input
@@ -67,7 +74,7 @@
       </div>
       <button class="btn btn-outline-dark">Submit</button>
     </form>
-
+    <% } %>
     <hr />
 
     <p><b>All Reviews</b></p>
@@ -75,13 +82,18 @@
       <% for (review of listing.reviews) { %>
       <div class="card col-5 ms-3 mb-3">
         <div class="card-body">
-          <h5 class="card-title">User</h5>
+          <h5 class="card-title">@<%= review.author.username %></h5>
           <p class="card-text"><%= review.comment %></p>
           <p class="card-text"><%= review.rating %> Stars</p>
         </div>
-        <form action="/api/v1/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+         <% if (currUser && review.author && review.author._id.toString() === currUser._id.toString()) { %>
+        <form
+          action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+          method="POST"
+        >
           <button class="btn btn-sm btn-dark">Delete</button>
         </form>
+       <% } %>
       </div>
       <% } %>
     </div>

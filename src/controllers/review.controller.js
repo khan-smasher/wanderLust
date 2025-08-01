@@ -6,35 +6,50 @@ import { ApiError } from "../utils/ApiError.js";
 
 // POST handler to create review for specific listing
 const reviewOnIndividualListing = asyncHandler(async (req, res) => {
-  // Find listing by ID passed in URL parameter
-  const listing = await Listing.findById(req.params.id);
+  const listingId = req.params.id;
 
-  // Error if listing not found
+  //  Fetch the listing by ID
+  const listing = await Listing.findById(listingId);
+
+  //  Handle missing listing
   if (!listing) {
     throw new ApiError(404, "Listing not found");
   }
 
-  // Create new Review object from submitted form data
-  const newReview = new Review(req.body.review);
+  //  Check if user is authenticated (robust null check)
+  if (!req.user || !req.user._id) {
+    throw new ApiError(401, "You must be logged in to leave a review.");
+  }
 
-  // Add review to listing's reviews array
+  //  Validate review data (optional but good practice)
+  if (!req.body.review || !req.body.review.rating || !req.body.review.comment) {
+    throw new ApiError(400, "Incomplete review data submitted.");
+  }
+
+  //  Create a new review instance and assign author
+  const newReview = new Review(req.body.review);
+  newReview.author = req.user._id;
+
+  //  Push review to listing's review array
   listing.reviews.push(newReview);
 
-  // Save both review and updated listing
+  //  Save both
   await newReview.save();
   await listing.save();
 
-  // Redirect to listing detail page
-  res.redirect(`/api/v1/listings/${listing._id}`);
+  //  Provide user feedback
+  req.flash("success", "New Review Created");
+  res.redirect(`/listings/${listing._id}`);
 });
+
 
 const deleteReviewFromListing = asyncHandler(async (req, res) => {
   let {id, reviewId} = req.params;
   
   await Listing.findByIdAndUpdate(id, {$pull : {reviews: reviewId}});
   await Review.findByIdAndDelete(reviewId);
-
-  res.redirect(`/api/v1/listings/${id}`)
+  req.flash("success", "Review Deleted!");
+  res.redirect(`/listings/${id}`)
 })
 
 
