@@ -20,18 +20,23 @@ const showAllListings = asyncHandler(async (req, res) => {
 //GET listings/search
 // Fetches requested listing
 const searchListings = asyncHandler(async (req, res) => {
-  const rawQuery = req.query.query || "";
-    const query = escapeRegex(rawQuery.toLowerCase()); // lowercase the input
-    const regex = new RegExp(query, "i"); // "i" makes it case-insensitive
-
-    const listings = await Listing.find({
+  const query = req.query.query?.toLowerCase() || '';
+    const priceRange = req.query.price;
+    const queryObj = {
       $or: [
-        { title: regex },
-        { description: regex },
-        { location: regex },
-        { country: regex },
+        { title: { $regex: query, $options: 'i' } },
+        { description: { $regex: query, $options: 'i' } },
+        { location: { $regex: query, $options: 'i' } },
+        { country: { $regex: query, $options: 'i' } },
       ],
-    });
+    };
+
+    if (priceRange) {
+      const [min, max] = priceRange.split('-').map(Number);
+      queryObj.price = { $gte: min, $lte: max };
+    }
+
+    const listings = await Listing.find(queryObj);
     res.render("listings/index.ejs",  { allListings: listings });
 })
 

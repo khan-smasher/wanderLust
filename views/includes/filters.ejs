@@ -1,0 +1,89 @@
+<style>
+  a {
+    text-decoration: none !important;
+    color: black;
+  }
+  .filter {
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+  }
+  .filter:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+  .filter p {
+    font-size: 1.2rem;
+  }
+  #priceDropdown {
+    display: none;
+    margin-top: 1rem;
+  }
+</style>
+
+<div id="filters">
+  <a href="/listings/search?query=trending" class="filter">
+    <div><i class="fa-solid fa-fire"></i></div>
+    <p>Trending</p>
+  </a>
+  <a href="/listings/search?query=rooms" class="filter">
+    <div><i class="fa-solid fa-bed"></i></div>
+    <p>Rooms</p>
+  </a>
+  <a href="/listings/search?query=iconic cities" class="filter">
+    <div><i class="fa-solid fa-mountain-city"></i></div>
+    <p>Iconic Cities</p>
+  </a>
+  <a href="/listings/search?query=mountains" class="filter">
+    <div><i class="fa-solid fa-mountain"></i></div>
+    <p>Mountains</p>
+  </a>
+  <a href="/listings/search?query=castles" class="filter">
+    <div><i class="fa-solid fa-chess-rook"></i></div>
+    <p>Castles</p>
+  </a>
+  <a href="/listings/search?query=pools" class="filter">
+    <div><i class="fa-solid fa-person-swimming"></i></div>
+    <p>Pools</p>
+  </a>
+  <a href="/listings/search?query=campings" class="filter">
+    <div><i class="fa-solid fa-campground"></i></div>
+    <p>Campings</p>
+  </a>
+  <a href="/listings/search?query=farms" class="filter">
+    <div><i class="fa-solid fa-tractor"></i></div>
+    <p>Farms</p>
+  </a>
+  <a href="/listings/search?query=snowy" class="filter">
+    <div><i class="fa-solid fa-snowflake"></i></div>
+    <p>Snowy</p>
+  </a>
+
+  <!-- Price toggle -->
+  <div class="filter" onclick="togglePriceDropdown()">
+    <div><i class="fa-solid fa-tag"></i></div>
+    <p>Price</p>
+  </div>
+</div>
+
+<!-- Hidden dropdown -->
+<div id="priceDropdown" class="ms-4 mb-3">
+  <form class="d-flex align-items-center mt-2" action="/listings/search" method="GET">
+    <label for="price" class="me-2">₹:</label>
+    <select name="price" id="price" class="form-select w-auto me-2">
+      <option value="">Any</option>
+      <option value="0-1000">₹0–₹1,000</option>
+      <option value="1000-5000">₹1,000–₹5,000</option>
+      <option value="5000-1000000">₹5,000+</option>
+    </select>
+    <button type="submit" class="btn btn-outline-dark">Apply</button>
+  </form>
+</div>
+
+<script>
+  function togglePriceDropdown() {
+    const dropdown = document.getElementById("priceDropdown");
+    dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+  }
+</script>

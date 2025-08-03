@@ -28,6 +28,8 @@ body {
     font-size: 1.2rem;
   }
 
+  
+
 /* Navbar */
 
 .navbar-nav{
@@ -49,26 +51,7 @@ body {
 .nav-link {
     color: #222222 !important;
 }
-
-  .search-btn {
-    background-color: #fe424d;
-    color: #fff;
-    border-radius: 25px;
-    padding: 0 1rem;
-  }
-  .search-btn:hover {
-    border: 1px solid black;
-  }
-  .search-btn i {
-    display: inline;
-    margin-right: 0.5rem;
-  }
-  .search-input {
-    border-radius: 25px;
-    padding: 0.5rem 3rem;
-    font-size: 0.8rem;
-  }
-
+  
 /* Footer */
 .f-info-links a {
     text-decoration: none;
