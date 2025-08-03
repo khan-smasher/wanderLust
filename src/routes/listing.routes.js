@@ -18,7 +18,10 @@ import {
 } from "../middlewares/validateModel.middleware.js";
 
 import { isLoggedIn, isOwner, saveRedirectUrl } from "../middlewares/validateUserInfo.middleware.js";
+import multer from "multer";
+import { storage } from "../../cloudConfig.js";
 
+const upload = multer({storage})
 
 // Creating a new Express router
 const router = Router();
@@ -43,7 +46,7 @@ router.route("/new").get(isLoggedIn,renderFormForNewListing);
  * Middleware: validateListingModel - validates listing data
  * Controller: createNewListing
  */
-router.route("/").post(isLoggedIn,validateListingModel, createNewListing);
+router.route("/").post(isLoggedIn,validateListingModel, upload.single('listing[image]'), createNewListing);
 
 /**
  * Route: GET /:id/edit

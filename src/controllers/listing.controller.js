@@ -20,7 +20,7 @@ const showIndividualListing = asyncHandler(async (req, res) => {
   const listing = await Listing.findById(id).populate({path: "reviews", populate: {path: "author"}}).populate("owner"); // Populate reviews from Review model
   if (!listing) {
     req.flash("error", "Requested Listing does not exists!");
-    return res.redirect(`/api/v1/listings`)
+    return res.redirect(`/listings`)
   }
   res.render("listings/show", { listing });
 });
@@ -42,8 +42,12 @@ const createNewListing = asyncHandler(async (req, res, next) => {
   }
 
   // Creating and saving new listing
+  const url = req.file.path;
+  const filename = req.file.filename;
+
   const newListing = new Listing(req.body.listing);
   newListing.owner = req.user._id;
+  newListing.image = {url, filename};
   await newListing.save();
   req.flash("success", "New Listing Created");
 

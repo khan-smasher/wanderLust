@@ -10,7 +10,8 @@ import session from "express-session";
 import flash from "connect-flash";
 import passport from "passport";
 import LocalStrategy from "passport-local";
-import User from "./models/user.model.js"
+import User from "./models/user.model.js";
+import multer from "multer";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 
@@ -48,8 +49,6 @@ const sessionOptions = {
 // Serve static files from /public folder
 app.use(express.static(path.join(__dirname, "../public")));
 
-// Home route (just a placeholder)
-app.get("/api/v1/", (req, res) => res.send("Home"));
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -68,6 +67,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// Home route 
+app.get("/", (req, res) => res.render("home"));
 
 // Use imported routers
 app.use("/listings", listingRouter);

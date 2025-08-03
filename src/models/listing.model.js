@@ -16,9 +16,8 @@ const listingSchema = new Schema(
       trim: true,
     },
     image: {
-      type: String,
-      default: "https://assets-news.housing.com/news/wp-content/uploads/2022/03/31010142/Luxury-house-design-Top-10-tips-to-add-luxury-to-your-house-FEATURE-compressed.jpg",
-      set: (val) => (val === "" ? undefined : val),
+      url: String,
+      filename: String,
     },
     price: {
       type: Number,
