@@ -1,29 +1,66 @@
-<div class="navbar navbar-expand-sm bg-body-light border-bottom sticky-top ">
+<style>
+  .search-btn {
+    background-color: #fe424d;
+    color: #fff;
+    border-radius: 25px;
+    padding: 0 1rem;
+  }
+  .search-btn:hover {
+    border: 1px solid black;
+  }
+  .search-btn i {
+    display: inline;
+    margin-right: 0.5rem;
+  }
+  .search-input {
+    border-radius: 25px;
+    padding: 0.5rem 3rem;
+    font-size: 0.8rem;
+  }
+</style>
+
+<div class="navbar navbar-expand-sm bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
-        <i class="fa-solid fa-compass"></i>
+      <i class="fa-solid fa-compass"></i>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      
-        <!-- Left nav -->
-        <div class="navbar-nav">
-          <a class="nav-link" href="/">Home</a>
-          <a class="nav-link" href="/listings">All Listings</a>
-          <a class="nav-link" href="/listings/new">Add New Listing</a>
-        </div>
+      <!-- Left nav -->
+      <div class="navbar-nav">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/listings">Explore</a>
+      </div>
 
-        <!-- Right nav -->
-        <div class="navbar-nav justify-content-end">
-          <% if (!currUser) { %>
-            <a class="nav-link" href="/signup">Sign up</a>
-            <a class="nav-link" href="/login">Log in</a>
-          <% } else { %>
-            <a class="nav-link" href="/logout">Log out</a>
-          <% } %>
-        </div>
+      <div class="navbar-nav ">
+        <form class="d-flex" role="search" action="/listings/search" method="GET">
+          <input
+            class="form-control me-2 search-input"
+            type="search"
+            name="query"
+            placeholder="Search destination"
+          />
+          <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+        </form>
+      </div>
+
+      <!-- Right nav -->
+      <div class="navbar-nav justify-content-end">
+        <a class="nav-link" href="/listings/new">Airbnb your home</a>
+        <% if (!currUser) { %>
+        <b><a class="nav-link" href="/signup">Sign up</a></b>
+        <b><a class="nav-link" href="/login">Log in</a></b>
+        <% } else { %>
+        <b><a class="nav-link" href="/logout">Log out</a></b>
+        <% } %>
+      </div>
       <!-- </div> -->
     </div>
   </div>

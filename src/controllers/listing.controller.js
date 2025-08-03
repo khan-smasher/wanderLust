@@ -1,10 +1,14 @@
 // Importing utilities and models
 import { asyncHandler } from "../utils/asyncHandler.js"; // Handles async errors in routes
-import { ApiResponse } from "../utils/ApiResponse.js";    // Utility to format API responses (not used here, can be useful later)
-import { ApiError } from "../utils/ApiError.js";          // Custom error class for API errors
-import Listing from "../models/listing.model.js";         // Mongoose model for Listings
-import Review from "../models/review.model.js";           // Mongoose model for Reviews
+import { ApiResponse } from "../utils/ApiResponse.js"; // Utility to format API responses (not used here, can be useful later)
+import { ApiError } from "../utils/ApiError.js"; // Custom error class for API errors
+import Listing from "../models/listing.model.js"; // Mongoose model for Listings
+import Review from "../models/review.model.js"; // Mongoose model for Reviews
 import passport from "passport";
+
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
 
 // GET /listings
 // Fetches and displays all listings
@@ -13,14 +17,34 @@ const showAllListings = asyncHandler(async (req, res) => {
   res.render("listings/index", { allListings });
 });
 
+//GET listings/search
+// Fetches requested listing
+const searchListings = asyncHandler(async (req, res) => {
+  const rawQuery = req.query.query || "";
+    const query = escapeRegex(rawQuery.toLowerCase()); // lowercase the input
+    const regex = new RegExp(query, "i"); // "i" makes it case-insensitive
+
+    const listings = await Listing.find({
+      $or: [
+        { title: regex },
+        { description: regex },
+        { location: regex },
+        { country: regex },
+      ],
+    });
+    res.render("listings/index.ejs",  { allListings: listings });
+})
+
 // GET listings/:id
 // Fetch and show a specific listing with its reviews
 const showIndividualListing = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const listing = await Listing.findById(id).populate({path: "reviews", populate: {path: "author"}}).populate("owner"); // Populate reviews from Review model
+  const listing = await Listing.findById(id)
+    .populate({ path: "reviews", populate: { path: "author" } })
+    .populate("owner"); // Populate reviews from Review model
   if (!listing) {
     req.flash("error", "Requested Listing does not exists!");
-    return res.redirect(`/listings`)
+    return res.redirect(`/listings`);
   }
   res.render("listings/show", { listing });
 });
@@ -47,7 +71,7 @@ const createNewListing = asyncHandler(async (req, res, next) => {
 
   const newListing = new Listing(req.body.listing);
   newListing.owner = req.user._id;
-  newListing.image = {url, filename};
+  newListing.image = { url, filename };
   await newListing.save();
   req.flash("success", "New Listing Created");
 
@@ -62,9 +86,12 @@ const renderEditForm = asyncHandler(async (req, res) => {
   const listing = await Listing.findById(id);
   if (!listing) {
     req.flash("error", "Requested Listing does not exists!");
-    return res.redirect(`/listings`)
+    return res.redirect(`/listings`);
   }
-  res.render("listings/edit", { listing });
+  let originalUrl = listing.image.url;
+  originalUrl = originalUrl.replace("/upload", "/upload/w_250/");
+  // console.log(originalUrl)
+  res.render("listings/edit", { listing, originalUrl });
 });
 
 // PATCH /listings/:id
@@ -77,12 +104,20 @@ const updateListing = asyncHandler(async (req, res, next) => {
   if (!updatedData) {
     return next(new ApiError(400, "No data submitted"));
   }
-  
+
   // Find listing by ID and update it
   const updatedListing = await Listing.findByIdAndUpdate(id, updatedData, {
-    new: true,             // Return updated document
-    runValidators: true,   // Validate before saving
+    new: true, // Return updated document
+    runValidators: true, // Validate before saving
   });
+
+  if (typeof req.file !== "undefined") {
+    const url = req.file.path;
+    const filename = req.file.filename;
+
+    updatedListing.image = { url, filename };
+    await updatedListing.save();
+  }
 
   if (!updatedListing) {
     throw new ApiError(404, "Listing not found");
@@ -118,4 +153,5 @@ export {
   renderEditForm,
   updateListing,
   deleteListing,
+  searchListings,
 };

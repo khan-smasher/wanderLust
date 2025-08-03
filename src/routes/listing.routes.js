@@ -10,6 +10,7 @@ import {
   updateListing,
   deleteListing,
   createNewListing,
+  searchListings,
 } from "../controllers/listing.controller.js";
 
 // Importing middleware to validate listing data before creating or updating
@@ -34,6 +35,13 @@ const router = Router();
 router.route("/").get(showAllListings);
 
 /**
+ * Route: GET /
+ * Description: Search for listing
+ * Controller: searchListing
+ */
+router.route("/search").get(searchListings);
+
+/**
  * Route: GET /new
  * Description: Render form to create a new listing
  * Controller: renderFormForNewListing
@@ -47,6 +55,8 @@ router.route("/new").get(isLoggedIn,renderFormForNewListing);
  * Controller: createNewListing
  */
 router.route("/").post(isLoggedIn,validateListingModel, upload.single('listing[image]'), createNewListing);
+
+
 
 /**
  * Route: GET /:id/edit
@@ -68,7 +78,7 @@ router.route("/:id").get(showIndividualListing);
  * Middleware: validateListingModel - validates updated data
  * Controller: updateListing
  */
-router.route("/:id").patch(isLoggedIn,isOwner,validateListingModel, updateListing);
+router.route("/:id").patch(isLoggedIn,isOwner,validateListingModel,upload.single('listing[image]'), updateListing);
 
 /**
  * Route: DELETE /:id
