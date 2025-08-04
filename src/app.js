@@ -8,6 +8,7 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import flash from "connect-flash";
+import MongoStore from "connect-mongo";
 import passport from "passport";
 import LocalStrategy from "passport-local";
 import User from "./models/user.model.js";
@@ -19,6 +20,7 @@ dotenv.config({ path: "./.env" });
 import listingRouter from "./routes/listing.routes.js";
 import reviewRouter from "./routes/review.routes.js";
 import userRouter from "./routes/user.routes.js";
+import { log } from "console";
 
 // Setting up __dirname in ES Module
 const __filename = fileURLToPath(import.meta.url);
@@ -39,11 +41,30 @@ app.engine("ejs", ejsMate); // Use ejs-mate for layouts/partials
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views")); // Set views directory
 
+const store = MongoStore.create({
+  mongoUrl: process.env.CLD_DB_URL,
+  crypto: {
+    secret: process.env.SESSION_SECRET
+  },
+  touchAfter: 24 * 3600,
+});
+
+store.on("error", () => {
+  console.log("ERROR in MONGO SESSION STORE: ", err);
+})
+
 const sessionOptions = {
-  secret: "supersecret",
+  store,
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  },
 };
+
 
 
 // Serve static files from /public folder
